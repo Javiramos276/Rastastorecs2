@@ -1,0 +1,7 @@
+env
+*.pyc
+*.png
+*.jpg
+*.pdf
+__pycache__/
+db.sqlite3
