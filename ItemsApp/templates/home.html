@@ -1,12 +1,39 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <title>RastaStorecs2</title>
 </head>
 <body>
-    
-<h2>hola</h2>
+    {% for arma in armas %}
+    <div class="d-inline-block mb-3">
+        <div class="card rounded  mt-3" style="width: 18rem;">
+            <div class="bg-dark">
+                <h5 class="card-title text-white text-center">{{ arma.full_item_name }}</h5>
+            </div>
+            <div class="w-100 bg-dark" style="position: relative;">
+                <img class="card-img-top img-fluid" src="{{ arma.imageurl }}" alt="Card image cap">
+                <div class="brillo"></div> <!-- Div para aplicar el brillo -->
+            </div>
+            <div class="card-body bg-dark rounded">
+                <div class="text-white d-flex justify-content-between">{{ arma.item_name }} <div> <img src="{% static 'img/copyclip.png' %}" class="altura-20 ancho-20" alt=""></div> </div>
+                <div class="text-danger">{{ arma.quality_name }}</div>
+                <div class="text-white">Float: {{ arma.floatvalue }}</div>
+                <div class="d-flex">
+                    <div class="mr-2">
+                        <a href="{{arma.inspect_link}}" class="btn colorcito">Inspeccionar <img src="{% static 'img/lupa.png' %}" class="altura-20 ancho-20 texto-blanco"alt=""></a>
+                    </div>
+                    <div class="mr-2">
+                        <a href="#" class="btn colorcito">Comprar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 </body>
 </html>

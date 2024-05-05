@@ -1,0 +1,30 @@
+.brillo {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+    border-radius: 50%;
+    display: block;
+}
+
+.altura-20{
+    height: 20px;
+}
+
+.ancho-20{
+    width: 20px;
+}
+
+.colorcito{
+    background-color: #1c1b1b;
+    color: azure;
+}
+
+.texto-blanco{
+    color: azure;
+
+}

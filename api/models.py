@@ -28,3 +28,4 @@ class Arma(models.Model):
     rarity_name = models.CharField(max_length=255, blank=True, null=True)
     origin_name = models.CharField(max_length=255, blank=True, null=True)
     precio = models.FloatField(blank=True, null=True)  
+    inspect_link = models.URLField(null=True)
