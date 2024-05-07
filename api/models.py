@@ -29,3 +29,4 @@ class Arma(models.Model):
     origin_name = models.CharField(max_length=255, blank=True, null=True)
     precio = models.FloatField(blank=True, null=True)  
     inspect_link = models.URLField(null=True)
+    owner_steamid = models.BigIntegerField(blank=False, default=76561199092801246)  #Cada arma siempre tiene que tener un propietario

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'ItemsApp',
     'api',
     'coreapi',
+    'carrito',
 ]
 
 

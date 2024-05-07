@@ -17,12 +17,26 @@ def view_cargar_objetos(request):
     # Instancio el ItemHandler
     item_handler = ItemHandler()
     
-    # Obtenemos los links que vamos a procesar
-    links = item_handler.steam_links()
+    owner_steamid = {
+            "Rasta":76561199092801246,
+            "Fell":76561198085469210 ,
+        }
+    
+    # Obtenemos el txt del inventario de cada uno
+    # item_handler.obtenertxt()
 
-    # Proceso los primeros 10 links para probar
-    first_3_links = links[:10]
-    item_handler.links_processed(first_3_links)
+    # Filtramos la informacion
+    for owner_name,owner_id in owner_steamid.items(): #Aca no se si es necesario pasar owner_name, pero como se trata de un dict lo dejo
+        print(f'el owner_name es {owner_name}')
+        print(f'el owner_id es {owner_id}')
+        item_handler.links_processed(owner_name, owner_id)
+
+    return HttpResponse("Los enlaces se estan procesando.")
+
+    
+    
+
+    
 
 def view_compras(request):
     carrito = Carrito()
