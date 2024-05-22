@@ -93,7 +93,7 @@ class ItemHandler(models.Model):
         ]
         
         links = self.steam_links(owner_name,owner_steamid) 
-        links = links[:50] #Solo retorno los primeros 10 para probar
+        links = links[:150] #Solo retorno los primeros 10 para probar
         armas_existente  = Arma.objects.all() #Me traigo todas las armas de la base de datos
         for link in links:
             arma_existente = armas_existente.filter(inspect_link=link).exists()  #Verifico con un filtro si ya existe una arma con dicho link

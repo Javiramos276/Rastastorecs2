@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>Navbar</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light b-color nav-backcolor">
+        <div class="container-fluid bg-navcolor p-3 navbar-border">
+            <!-- Logo a la izquierda -->
+            <a class="navbar-brand" href="#">
+                <span class="nav-rasta">RASTA</span>
+                <span class="nav-store">STORE</span>
+            </a>
+            
+            <!-- Botón para colapsar el menú en dispositivos pequeños -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+
+            <!-- Elementos de navegación a la derecha -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-5">
+                    <li class="nav-item nav-text">
+                        <a class="nav-link" href="#">Inicio</a>
+                    </li>
+                    <li class="nav-item nav-text">
+                        <a class="nav-link" href="#">Comprar</a>
+                    </li>
+                    <li class="nav-item nav-text">
+                        <a class="nav-link" href="#">Vender</a>
+                    </li>
+                    <li class="nav-item nav-text">
+                        <a class="nav-link" href="#">Nosotros</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item nav-text">
+                        <div class="nav-link">Hola {{user.email}}!</div>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn-nav-bar nav-text text-white"><a href="{% url 'signup' %}" class="link">Salir</a></button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li class="nav-item nav-text">
+                        <div class="nav-link">No has iniciado sesión</div>
+                    </li>
+                    <li class="nav-item d-flex align-items-center">
+                        <button class="btn-nonestyle nav-text-btn"><a href="{% url 'login' %}" class="link">Ingresar</a></button>
+                    </li>
+                    <li class="nav-item d-flex align-items-center">
+                        <button class="btn-nav-bar nav-text text-white"><a href="{% url 'signup' %}" class="link">Registrarse</a></button>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

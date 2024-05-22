@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api',
     'coreapi',
     'carrito',
+    'Usuarios',
 ]
 
 
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'carrito.context_processor.total_carrito',
             ],
         },
     },
@@ -83,7 +85,7 @@ WSGI_APPLICATION = 'RastastoreProyecto.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'rastastoredb',
+        'NAME': 'Rastastoredb',
         'USER': 'postgres',
         'PASSWORD': 'admin',
         'HOST': 'localhost',
@@ -139,3 +141,5 @@ LOGOUT_REDIRECT_URL = "home"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
 }
+
+AUTH_USER_MODEL = "Usuarios.CustomUser"
