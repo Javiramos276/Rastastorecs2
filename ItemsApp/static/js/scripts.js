@@ -110,7 +110,18 @@ rangeInput.forEach(input =>{
 //     await cargaInicial();
 // })
 
+//JUAN cuando se carga completamente el DOM
 document.addEventListener('DOMContentLoaded', () => {
+    //JUAN Hacer un fetch unica vez para obtener todas las armas (Que en realidad es un JSON enorme)
+
+    const obtenerPrecios = async () => {
+        const response = await fetch(`./get_precios`);
+        const data = await response.json();
+    }
+    //contruir la vista de todas las armas (iterar el super JSON y mostrar cada elemento en el DOM)
+
+    //averiguar como obtener el evento o detectar que el slide se movio para ejecutar la funcion "filter items"
+
     const rangeMin = document.querySelector('.range-min'); // Seleccionamos los rangos maximos y minimos
     const rangeMax = document.querySelector('.range-max');
     const priceGap = 200;
@@ -121,50 +132,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const updatePrices = async () => {
         const minVal = parseInt(rangeMin.value); // Obtenemos el valor mínimo y máximo
         const maxVal = parseInt(rangeMax.value);
+        
+        
+        if (data.message === "Success") {
+            if (maxVal - minVal >= priceGap) {
+                console.log(data);
 
-        if (maxVal - minVal >= priceGap) {
-            try {
-                const response = await fetch(`./get_precios/?minVal=${minVal}&maxVal=${maxVal}`);
-                const data = await response.json();
+                // Insertar nuevos resultados
+                data.armas.forEach(arma => {
+                    const imgArma = document.getElementById(`img-arma-${arma.id}`); // Obtenemos el id del elemento que contiene la imagen del arma
+                    const armaFullName = document.getElementById(`full-name-arma-${arma.id}`);
+                    const armaName = document.getElementById(`item-name-arma-${arma.id}`);
+                    const qualityArma = document.getElementById(`quality-arma-${arma.id}`);
+                    const floatArma = document.getElementById(`floatArma-${arma.id}`);
+                    const ArmaPrecio = document.getElementById(`ArmaPrecio-${arma.id}`);
 
-                if (data.message === "Success") {
-                    console.log(data);
+                    imgArma.src = arma.imageurl;
+                    armaFullName.innerText = arma.full_item_name;
+                    armaName.innerText = arma.item_name;
+                    qualityArma.innerText = arma.quality_name;
+                    floatArma.innerText = arma.floatvalue;
+                    ArmaPrecio.innerText = `$${arma.precio}`;
                     
-                    // Insertar nuevos resultados
-                    data.armas.forEach(arma => {
-                        const imgArma = document.getElementById(`img-arma-${arma.id}`); // Obtenemos el id del elemento que contiene la imagen del arma
-                        const armaFullName = document.getElementById(`full-name-arma-${arma.id}`);
-                        const armaName = document.getElementById(`item-name-arma-${arma.id}`);
-                        const qualityArma = document.getElementById(`quality-arma-${arma.id}`);
-                        const floatArma = document.getElementById(`floatArma-${arma.id}`);
-                        const ArmaPrecio = document.getElementById(`ArmaPrecio-${arma.id}`);
+                });
 
-                        imgArma.src = arma.imageurl;
-                        armaFullName.innerText = arma.full_item_name;
-                        armaName.innerText = arma.item_name;
-                        qualityArma.innerText = arma.quality_name;
-                        floatArma.innerText = arma.floatvalue;
-                        ArmaPrecio.innerText = `$${arma.precio}`;
-                        
-                    });
-
-                    // Filtrar los elementos del DOM existentes
-                    filterExistingArmas(minVal, maxVal);
-                } else {
-                    console.log(data.message);
-                    // Crear un elemento h1 indicando que no hay armas disponibles
-                    const divNoArmasMsg = document.createElement('div');
-                    const noArmasMsg = document.createElement('h1');
-                    noArmasMsg.textContent = 'No existen armas con ese rango de precios';
-                    noArmasMsg.className = 'text-center text-white'; // Puedes agregar tus propias clases para estilo
-                    divNoArmasMsg.appendChild(noArmasMsg);
-                }
-            } catch (error) {
-                console.error('Error:', error);
+                // Filtrar los elementos del DOM existentes
+                filterExistingArmas(minVal, maxVal);
+                
+                console.log(data.message);
+                // Crear un elemento h1 indicando que no hay armas disponibles
+                const divNoArmasMsg = document.createElement('div');
+                const noArmasMsg = document.createElement('h1');
+                noArmasMsg.textContent = 'No existen armas con ese rango de precios';
+                noArmasMsg.className = 'text-center text-white'; // Puedes agregar tus propias clases para estilo
+                divNoArmasMsg.appendChild(noArmasMsg);
             }
         }
-    };
-
+    }
     const filterExistingArmas = (minVal, maxVal) => {
         const armaItems = document.querySelectorAll('.arma-item');
 

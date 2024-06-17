@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse, JsonResponse
+from django.core import serializers
 from django.views.generic import TemplateView, ListView
 from .models import ItemHandler, Arma
 from django.db.models import Q #Permite hacer consultas complejas 
@@ -102,7 +103,6 @@ def view_agregar_precio(request,arma_id):
             arma = Arma.objects.get(id=arma_id)
             arma.precio = nuevo_precio
             arma.save()
-            print(arma.precio)
         else:
             print("El precio introducido no es válido")
 
@@ -116,24 +116,14 @@ def view_eliminar_item(request,arma_id):
 
     return redirect('items')
 
-def view_get_precios(request): #,minVal,maxVal
-    #Obtenemos una lista de armas con un filtro de rango que precios que obtenemos del js
+def view_get_precios(request):
     #Mandamos la respuesta en formato Json
-    minVal = request.GET.get('minVal', 0) #Aca voy a obtener los valores minimos y maximos del slider y los convierto a entero
-    maxVal = request.GET.get('maxVal', 100000) 
-    
-    print(f"Received minVal: {minVal}, maxVal: {maxVal}")
 
-    try:
-        minVal = int(minVal)
-        maxVal = int(maxVal)
-    except ValueError:
-        return JsonResponse({'message': 'Invalid input'}, status=400)
-    
-    armas = list(Arma.objects.filter(precio__range=(minVal, maxVal)).values())
+    armas = Arma.objects.all()
+    data = serializers.serialize('json', armas)
 
     if (len(armas)>0):
-        data = {'message':"Success", 'armas':armas}
+        data = {'message':"Success", 'armas':data}
     else:
         data = {'message':"No encontrado"}
     
