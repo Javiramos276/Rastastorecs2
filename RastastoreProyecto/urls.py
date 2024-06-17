@@ -24,8 +24,11 @@ from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("accounts/", include("Usuarios.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
+    path("carrito/",include("carrito.urls")),
     path('itemapp/', include('ItemsApp.urls')),
-    path("api/v1/",include('api.urls')),
+    path("api/",include('api.urls')),
+    path('api/registration/', include('dj_rest_auth.registration.urls')),
     path('docs/',include_docs_urls(title='Api documentation'))
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

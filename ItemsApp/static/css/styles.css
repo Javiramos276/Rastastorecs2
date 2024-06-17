@@ -1,15 +1,24 @@
-.brillo {
-    position: absolute;
-    content: '';
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 70%);
-    pointer-events: none;
-    border-radius: 50%;
-    display: block;
+:root {
+    --color-factory-new: #0705CE; /* Azul primario */
+    --color-minimal-wear: #BDBFFF; /* Gris secundario */
+    --color-field-tested: #763EFD; /* Amarillo de acento */
+    --color-well-worn: #EB5757; /* Amarillo de acento */
+    --color-battle-scarred: #9093fa; /* Amarillo de acento */
+    --color-violeta: #9163F2;
+    --color-inside-card:#1A1A1A;
+    --color-description-card: #0F0F0F;
+
+  }
+
+body{
+    background-color: black;
 }
+
+.b-color{
+    background-color: black;
+}
+
+
 
 .altura-20{
     height: 20px;
@@ -26,5 +35,503 @@
 
 .texto-blanco{
     color: azure;
+}
 
+.text-black{
+    color: black;
+}
+
+.filter-bg{
+  background-color: #1c1b1b;
+}
+
+/* ---------------SECCION NAVBAR--------------- */
+
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+.bg-navcolor{
+    background-color: white;
+}
+
+.navbar-border {
+    border-bottom: 1px;
+    border-top: 1px;
+    border-left: 0px;
+    border-right: 0px;
+    border-style: solid;
+    border-color: #1c1b1b;
+}
+
+.nav-text{
+  font-family: 'PAGRevolucion';
+}
+
+.nav-text-btn{
+  font-family: 'PAGRevolucion';
+  color: var(--color-violeta);
+}
+
+.nav-logo-store{
+  font-family: 'YapariTrial-BoldExpanded';
+}
+
+.nav-store{
+  font-family: 'YapariTrial-ExtraBold';
+}
+
+.nav-rasta{
+  font-family: 'YapariTrial-Expanded' ;
+}
+
+.yapari-Bexpanded{
+  font-family: 'YapariTrial-Expanded';
+}
+
+.yapari-regular{
+  font-family: 'YapariTrial-Regular';
+}
+
+.yapari-ExtraBold{
+  font-family: 'YapariTrial-ExtraBold';
+}
+
+.yapari-ExtraBoldExpanded{
+  font-family: 'YapariTrial-ExtraBoldExpanded';
+}
+
+.PAGRevolucion{
+  font-family: 'PAGRevolucion';
+}
+
+.separator{
+  border-right: 1px solid white;
+  padding-right: 40px;
+}
+
+.txt-header{
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+li::marker {
+  color: var(--color-violeta);
+}
+
+.header{
+  font-size: 45px;
+}
+
+.header-backcolor{
+  background-color: white;
+}
+
+.nav-backcolor{
+  background-color: white;
+}
+
+.btn-nav-bar{
+    background-color: #000000;
+    border-radius: 16px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-bottom: 6px;
+}
+
+.btn-nonestyle{
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+
+.header-backimg{
+  background-color: var(--color-violeta);
+}
+
+.header-img-div-border{
+  border-radius: 40px;
+}
+
+.link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.rotada-espejada {
+    transform: rotate(-50deg) scaleX(-1);
+}
+
+
+.img-sponsor{
+    transform: rotate(50deg);
+}
+
+.bg-card-oscuro{
+  background-color: var(--color-inside-card);
+}
+
+.bg-card-description{
+  background-color: var(--color-description-card);
+}
+
+.color-violeta{
+  color: var(--color-violeta);
+}
+
+.white-color{
+  color: white;
+}
+/* Fuentes */
+
+.card-custom-sizes {
+  width: 18rem; /* Tamaño fijo para las cartas */
+  height: 28rem;
+}
+
+
+.kanit-thin {
+    font-family: "Kanit", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+  }
+  
+  .kanit-extralight {
+    font-family: "Kanit", sans-serif;
+    font-weight: 200;
+    font-style: normal;
+  }
+  
+  .kanit-light {
+    font-family: "Kanit", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .kanit-regular {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .kanit-medium {
+    font-family: "Kanit", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .kanit-semibold {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+  }
+  
+  .kanit-bold {
+    font-family: "Kanit", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .kanit-extrabold {
+    font-family: "Kanit", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+  }
+  
+  .kanit-black {
+    font-family: "Kanit", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  .kanit-thin-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+  }
+  
+  .kanit-extralight-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 200;
+    font-style: italic;
+  }
+  
+  .kanit-light-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  .kanit-regular-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .kanit-medium-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  .kanit-semibold-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 600;
+    font-style: italic;
+  }
+  
+  .kanit-bold-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+  .kanit-extrabold-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 800;
+    font-style: italic;
+  }
+  
+  .kanit-black-italic {
+    font-family: "Kanit", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+  }
+  
+/* Cards */
+
+.float-line {
+    display: flex;
+    align-items: center;
+    height: 10px; /* Altura de la barra */
+    border-radius: 3px; /* Borde redondeado */
+}
+
+.float-border-bs{
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.float-border-fn{
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.precio{
+  font-size: 30px;
+  color:var(--color-violeta);
+}
+
+.d-none{
+  display: none;
+
+}
+
+.input-price{
+  background-color: transparent;
+}
+
+.img-modify-card{
+  width: 20px;
+  height: 20px;
+}
+
+.input-filter{
+  background-color: transparent;
+  width: 10rem;
+  height: auto;
+}
+
+.div-img-copy{
+  border-radius: 20px;
+  color: var(--color-inside-card);
+}
+
+.color-bar {
+    height: 100%; /* Altura completa de la barra */
+    margin-right: 5px; /* Espacio entre las secciones */
+}
+
+.separator-price{
+  font-size: 24px;
+}
+
+.slider-price{
+  height: 5px;
+  border-radius: 5px;
+  background: #ddd;
+  position: relative;
+}
+
+.slider-price .progress-price{
+  height: 5px;
+  left: 25%;
+  right: 25%;
+  position: absolute;
+  border-radius: 5px;
+  background-color: var(--color-violeta);
+
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+}
+
+.range-input{
+  position: relative;
+}
+
+.range-input input{
+  position: absolute;
+  top: -5px;
+  height: 5px;
+  width: 100%;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb{
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  pointer-events:auto;
+  -webkit-appearance: none;
+  background: var(--color-violeta);
+}
+
+input[type="range"]::-moz-range-thumb{
+  height: 17px;
+  width: 17px;
+  border-radius: 50%;
+  border:none;
+  pointer-events:auto;
+  -webkit-appearance: none;
+  background: var(--color-violeta);
+}
+
+
+.color-factory-new{
+    background-color: var(--color-factory-new);
+}
+
+.color-minimal-wear{
+    background-color: var(--color-minimal-wear);
+}
+
+.color-field-tested{
+    background-color: var(--color-field-tested);
+}
+
+.color-well-worn{
+    background-color: var(--color-well-worn);
+}
+
+.color-battle-scarred{
+    background-color: var(--color-battle-scarred);
+}
+
+
+.estado-flecha {
+position: absolute;
+top: -10px;
+width: 0;
+height: 0;
+border-left: 10px solid transparent;
+border-right: 10px solid transparent;
+}
+
+.width-10{
+    width: 10%;
+}
+
+.width-20{
+    width: 20%;
+}
+.width-30{
+    width: 30%;
+}
+.width-40{
+    width: 40%;
+}
+.width-50{
+    width: 50%;
+}
+
+/* Filtros */
+
+.btn-filter{
+  width: 20px;
+  height: 20px;
+  border: 1px solid white;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.btn-filter-despliegue{
+  width: 10px;
+  height: 1px;
+  border: none;
+  border-radius: 10px;
+}
+
+@font-face {
+  font-family: 'YapariTrial-Bold';
+  src: local('YapariTrial-Bold'),
+       url('../fonts/YapariTrial-Bold.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-BoldExpanded';
+  src: local('YapariTrial-BoldExpanded'),
+       url('../fonts/YapariTrial-BoldExpanded.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-Regular';
+  src: local('YapariTrial-Regular'),
+       url('../fonts/YapariTrial-Regular.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-Medium';
+  src: local('YapariTrial-Medium'),
+       url('../fonts/YapariTrial-Medium.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-ExtraBoldExpanded';
+  src: local('YapariTrial-ExtraBoldExpanded'),
+       url('../fonts/YapariTrial-ExtraBoldExpanded.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-Expanded';
+  src: local('YapariTrial-Expanded'),
+       url('../fonts/YapariTrial-Expanded.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-BoldExtended';
+  src: local('YapariTrial-BoldExtended'),
+       url('../fonts/YapariTrial-BoldExtended.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'YapariTrial-ExtraBold';
+  src: local('YapariTrial-ExtraBold'),
+       url('../fonts/YapariTrial-ExtraBold.ttf') format("truetype");
+}
+
+@font-face {
+  font-family: 'PAGRevolucion';
+  src: local('PAGRevolucion'),
+       url('../fonts/PAGRevolucion.ttf') format("truetype");
 }

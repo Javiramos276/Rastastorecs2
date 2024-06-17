@@ -9,54 +9,59 @@ from api.models import Arma
 import os
 
 # Create your models here.
-class ItemHandler():
-
-    def __init__(self):
-        self.processed_links = set() #Defino un conjunto donde voy a guardar las links que ya analice
-        self.load_processed_links() #Los cargo porque los guarde en disco
-
-    def load_processed_links(self):
-        if os.path.exists("processed_links.txt"):
-            with open("processed_links.txt", "r") as f:
-                self.processed_links = set(f.read().splitlines())
-
-    def save_processed_links(self, link):
-        self.processed_links.add(link)  # Agregar el nuevo enlace al conjunto
-        with open("processed_links.txt", "w") as f:
-            f.write("\n".join(self.processed_links))
+class ItemHandler(models.Model):
 
     def obtenertxt(self):
-        json_data2 = (requests.get("https://steamcommunity.com/inventory/76561199092801246/730/2")).json()                           
-        with open('jsonitemsrasta.txt','w', encoding="utf-8") as file:
-            json.dump(json_data2, file)
+        #Permite obtener un txt con los datos en crudo del endpoint con la informacion de los objetos
+        owner_steamid = {
+            "Rasta":76561199092801246,
+            "Fell":76561198085469210,
+        }
+        for name, owner in owner_steamid.items():
+            print(f'Realizando la petición para {name}...')
+            #https://steamcommunity.com/inventory/{owner}/730/2?l=english&count=5000
+            response = requests.get(f"https://steamcommunity.com/inventory/{owner}/730/2?l=english&count=5000")
+            if response.status_code == 200:
+                print(f'Petición realizada con éxito')                           
+                json_data = response.json()
+                with open(f'jsonitems_{name}.txt', 'w', encoding="utf-8") as file:
+                    json.dump(json_data, file)
+            else:
+                print(f"Hubo un problema al realizar la petición, status_code ={response.status_code}")
 
-    def filtraritem(self):
-        with open(r'C:\Users\Ramos\Desktop\PYTHON_JAVI_NOTEMETASDIEGO\Rastastore_django\RastastoreProyecto\ItemsApp\jsonitemsrasta.txt','r', encoding='utf-8-sig') as f:
+    def filtraritem(self, owner_name):
+        #Retorna los valores en un json 
+        with open(f'jsonitems_{owner_name}.txt', 'r', encoding='utf-8') as f:
             content = f.read()
-            data = json.loads(content) #Data es un objeto que contiene descriptions y assets
+            data = json.loads(content)
+            # Procesar los archivos por separado
+            # datos_rasta = ItemHandler.filtraritem("Rasta")
+            # datos_fell = ItemHandler.filtraritem("Fell")
             return data
+        
 
-    def steam_links(self):
-        data = self.filtraritem() #Data es un diccionario de objetos que contiene la informacion de todos los objetos
+
+    def steam_links(self,owner_name,owner_steamid):
+    
+        data = self.filtraritem(owner_name) #Data es un diccionario de objetos que contiene la informacion de todos los objetos
         
         links = []
         for item in data['assets']:
-            classid = item['classid']
-            owner_steamid = '76561199092801246'
+            classid = item['classid'] #Buscamos en el diccionario de assets el classid
             for description in data['descriptions']:
-                if description['classid'] == classid:
-                    if 'actions' in description and description['actions']:
+                if description['classid'] == classid: #Relacionamos los objetos con el classid
+                    if 'actions' in description and description['actions']: #Vemos si tienen opcion para inspeccionar en el juego
                         assetid = item['assetid']
                         link = description['actions'][0]['link']
                         # Reemplazar assetid por classid en el enlace
                         modified_link = link.replace(r'%assetid%', assetid)
                         # Reemplazar owner_steamid en el enlace
-                        modified_link = modified_link.replace(r'%owner_steamid%', owner_steamid)
+                        modified_link = modified_link.replace(r'%owner_steamid%', str(owner_steamid))
                         links.append(modified_link)
         return links
     
 
-    def links_processed(self,first_3_links):
+    def links_processed(self,owner_name,owner_steamid):
         fields = [
             'origin',
             'quality' ,
@@ -83,11 +88,16 @@ class ItemHandler():
             'rarity_name',
             'origin_name',
             'inspect_link',
+            'owner_steamid',
+            'precio',
         ]
         
-        links = self.steam_links()
+        links = self.steam_links(owner_name,owner_steamid) 
+        links = links[:150] #Solo retorno los primeros 10 para probar
+        armas_existente  = Arma.objects.all() #Me traigo todas las armas de la base de datos
         for link in links:
-            if link in self.processed_links:
+            arma_existente = armas_existente.filter(inspect_link=link).exists()  #Verifico con un filtro si ya existe una arma con dicho link
+            if arma_existente:
                 print(f"El enlace {link} ya ha sido procesado. Saltando...")
             else:
                 json_data = requests.get(f"http://localhost/?url="+link)
@@ -97,42 +107,17 @@ class ItemHandler():
                     item_info = content.get('iteminfo')
                     my_data = {field: item_info.get(field, None) for field in fields}
                     my_data['inspect_link'] = link #Agrego manualmente el link de inspeccion porque no me lo da el request que estoy haciendo.
-                    arma = Arma(**my_data) #El ** desempaqueta un diccionaro y le pasa a Arma las claves y el valor
+                    my_data['owner_steamid'] = owner_steamid
+                    my_data['precio'] = 0
+                    arma = Arma(**my_data)  # Crear una nueva instancia de Arma con los datos
                     arma.save()
                     print('item cargado exitosamente.')
-                    self.save_processed_links(link)
                 else:
-                    print(f"La solicitud a {json_data} no fue exitosa. Código de estado:", json_data.status_code)
+                    print(f"La solicitud a {link} no fue exitosa. Código de estado:", json_data.status_code)
+                    
                     #Aca tengo que hacer un retry si la informacion no entro bien. Despues veo como hacerlo. De momento funciona. Usar bucle while!!!!
         
-class Carrito():
 
-    def __init__(self):
-        self.items = []
-    
-    def sumar_al_carrito(self,arma):
-        #Agrega items al carrito de compras
-        self.items.append(arma)
-
-    def sacar_del_carrito(self,arma):
-        #Quita items del carrito de compras
-        if self.items: #Eso significa que si la lista no esta vacía
-            if arma in self.items:  # Si el arma está en la lista
-                self.items.remove(arma)
-
-    def obtener_armas(self):
-        #Devuelve una lista con todas armas
-        armas = []
-        for arma in self.items:
-            armas.append(arma)
-        return armas
-
-    def obtener_precio_total(self):
-        #Obtiene el precio total del carrito
-        total = 0
-        for arma in self.items:
-            total += arma.precio  # para cada arma, sumamos el total de su precio y lo retornamos
-        return total
 
 
 

@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <title>RastaStorecs2</title>
+</head>
+<body>
+    {% include 'nav.html' %}
+
+    <div class="container-fluid d-flex justify-content-center header-backcolor pb-5">
+        <div class="d-flex w-50 h-75">
+            <div class="d-flex flex-column">
+                <div class="">
+                    <span class="header yapari-Bexpanded text-end">Las mejores skins</span>
+                    <span class="header yapari-ExtraBoldExpanded">al mejor precio</span>
+                </div>
+                <div class="d-flex justify-content-end w-75">
+                    <div class="txt-header w-100">Bienvenido a la rasta<strong>store</strong> la tienda mas segura
+                    para la compra y venta de skins de Counter Strike 2 </div>
+                </div>
+                <div class="d-flex pt-5">
+                    <li class="li-header">de <strong>5000</strong> intercambios realizados</li>
+                    <li class="li-header">Entregas al <strong>instante</strong></li>
+                    <li class="li-header">La tienda más <strong>segura</strong> de todas</li>
+                </div>
+            </div>
+            <div class="img-header w-50 h-100 header-backimg d-flex justify-content-center align-items-center header-img-div-border ">
+                <img src="{% static './img/rasta_face_logo.png' %}" alt="">
+            </div>
+        </div>
+    </div>
+
+    <!-- ---------------------SECCION DE FILTROS--------------------- -->
+
+    <div class="d-flex justify-content-around filter-bg container-fluid mt-3 p-3">
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion">Cuchillos</button></div>
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion">Guantes</button></div>
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion"><a href="{% url 'rifles' %}" class="link">Rifles</a></button></div>
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion"><a href="{% url 'pistolas' %}" class="link">Pistolas</a></button></div>
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion">Subfusiles</button></div>
+        <div class="separator pr-3"><button class="btn-nonestyle text-white PAGRevolucion">Otros</button></div>
+        <div class=""><button class="btn-nonestyle text-white"><a href="{% url 'items' %}" class="link PAGRevolucion">Quitar filtros</a></button></div>
+    </div>
+
+    <!-- ---------------------FIN SECCION DE FILTROS--------------------- -->
+    <div class="d-flex">
+        <div class="d-flex flex-wrap justify-content-around px-5 w-75 m-l-3">
+            {% for arma in armas %}
+                {% if arma.precio != 0 or user.is_superuser %}
+                <div class="d-inline-block mb-5 arma-item">
+                    <div class="card rounded bg-card-oscuro  mt-3 card-custom-sizes">
+                        {% if user.is_superuser %}
+                        <div class="text-white d-flex justify-content-end" >
+                            <button class="btn-nonestyle px-2"><img src="{% static 'img/modify.png'%}" alt="" class="img-modify-card"></button>
+                            <form id="" action="{% url 'borrar_item' arma.id %}" method="POST" class="d-flex formulario-precio">
+                                {% csrf_token %}
+                                <button class="btn-nonestyle"><img src="{% static 'img/cancel.png'%}" alt="" class="img-modify-card"></button>
+                            </form>
+                        </div>
+                        {% endif %}
+                        <div class="w-100 bg-card-oscuro" style="position: relative;">
+                            <img class="card-img-top img-fluid" src="{{ arma.imageurl }}" alt="Card image cap" id="img-arma-{{arma.id}}">
+                        </div>
+                        
+                        <div class="card-body bg-card-oscuro rounded bg-card-description">
+                            <div class="text-white" id="full-name-arma-{{arma.id}}"> {{ arma.full_item_name }}</div>
+                            <div class="text-white d-flex justify-content-between pb-2" id="item-name-arma-{{arma.id}}">{{ arma.item_name }} <div class="div-img-copy"> <img src="{% static 'img/copyclipblanco.png' %}" class="altura-20 ancho-20 white-color" alt=""></div> </div>
+                            <div class="color-violeta" id="quality-arma-{{arma.id}}">{{ arma.quality_name }}</div>
+                            <div class="float-line w-100">
+                                <div class="color-bar width-10 p-0 m-0 color-factory-new float-border-fn"></div>
+                                <div class="color-bar width-20 p-0 m-0 color-minimal-wear" ></div>
+                                <div class="color-bar width-20 p-0 m-0 color-field-tested" ></div>
+                                <div class="color-bar width-10 p-0 m-0 color-well-worn" ></div>
+                                <div class="color-bar width-40 p-0 m-0 color-battle-scarred float-border-bs" ></div>
+                            </div>
+                            <div class="text-white d-flex justify-content-end" id="floatArma-{{arma.id}}">{{ arma.floatvalue }}</div>
+                            <div class="mr-2 d-flex justify-content-center">
+                                {% if arma.precio == 0 and user.is_superuser %}
+                                <div class="precio d-none">${{ arma.precio }}</div>
+                                <div class="d-flex justify-content-between">
+                                    <form id="" action="{% url 'agregar_precio' arma.id %}" method="POST" class="d-flex pb-3 formulario-precio">
+                                        {% csrf_token %}
+                                        <input type="text" name="nuevo_precio" id="nuevo_precio" placeholder="Precio Aqui" class="w-75 input-price"> 
+                                        <button type="submit" class="btn colorcito">Actualizar</button>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <div class="precio" id="ArmaPrecio-{{arma.id}}">${{ arma.precio }}</div>
+                                {% endif %}
+                            </div>
+                                
+                            <div class="d-flex justify-content-between">
+                                
+                                <div class="mr-2">
+                                    <a href="{{arma.inspect_link}}" class="btn colorcito">Inspeccionar <img src="{% static 'img/lupa.png' %}" class="altura-20 ancho-20 texto-blanco"alt=""></a>
+                                </div>
+                                <div class="mr-2">
+                                    <form action="{% url 'agregar' arma.id %}" method=POST>
+                                        {% csrf_token %}
+                                        <input type="hidden" name="arma_id" value="{{ arma.id }}">
+                                        <button id="approve-btn" type="submit" class="btn colorcito">Comprar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="w-25 px-2 mt-3 bg-card-description">
+            <div class="d-flex justify-content-between w-50 pt-4 px-4">
+                <div class="text-white kanit-regular pt-2">Filtros adicionales</div>
+                <div class="d-flex text-white align-items-center" ><button class="btn-filter-despliegue" data-bs-toggle="collapse" data-bs-target="#dropdown-content">-</button>
+                </div>
+            </div>
+            <div id="dropdown-content" class="collapse pt-4 px-4">
+                <div class="text-white kanit-regular pt-2"><button class="btn-filter"></button> Todos</div>
+                <div class="text-white kanit-regular pt-2"><button class="btn-filter"></button> Souvenir</div>
+                <div class="text-white kanit-regular pt-2"><button class="btn-filter"></button> Statrak</div>
+                <div class="text-white kanit-regular pt-2"><button class="btn-filter"></button> Sin Statrak</div>
+            </div>
+            <div class="wrapper">
+                <div>
+                    <div class="text-white kanit-regular pt-4 px-4"> Seleccionar rango de precio</div>
+                </div>
+            
+                <div class="price-input d-flex">
+                    <div class="field-slider-price">
+                        <span class="text-white kanit-regular pt-4 px-4">Min</span>
+                        <input type="number" class="input-min w-50" value="2000">
+                    </div>
+                    <div class="separator-price text-white d-flex align-items-center">-</div>
+                    <div class="field-slider-price">
+                        <span class="text-white kanit-regular pt-4 px-4">Max</span>
+                        <input type="number" class="input-max w-50" value="100000">
+                    </div>
+                </div>
+                <div class="slider-price">
+                    <div class="progress-price"></div>
+                </div>
+                <div class="range-input">
+                    <input type="range" class="range-min" min="0" max="100000", value="0", step="200"> 
+                    <input type="range" class="range-max" min="0" max="100000", value="100000", step="200"> 
+                </div>
+            </div>
+                <div class="text-white kanit-regular pt-4 px-4">Seleccionar condicion</div>
+                <div>
+                    <div class="text-white kanit-regular pt-4 px-4"><button class="btn-filter"></button><a href="{% url 'factorynew' %}" class="link">Recien fabricado</a></button></div>
+                    {% comment %}
+                    <!-- <div class="text-white kanit-regular pt-2"><button class="btn-filter"><a href="{% url '' %}" class="link">Casi nuevo</a></button></div>
+                    <div class="text-white kanit-regular pt-2"><button class="btn-filter"><a href="{% url '' %}" class="link">Algo desgastado</a></button></div>
+                    <div class="text-white kanit-regular pt-2"><button class="btn-filter"><a href="{% url '' %}" class="link">Muy desgastado</a></button></div>
+                    <div class="text-white kanit-regular pt-2"><button class="btn-filter"><a href="{% url '' %}" class="link">Deplorable</a></button></div> -->
+                    {% endcomment %}
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

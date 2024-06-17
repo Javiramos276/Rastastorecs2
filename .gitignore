@@ -3,5 +3,6 @@ env
 *.png
 *.jpg
 *.pdf
+*.txt
 __pycache__/
 db.sqlite3
