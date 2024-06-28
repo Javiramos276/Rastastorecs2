@@ -10,6 +10,7 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from dj_rest_auth.serializers import LoginSerializer
 from rest_framework import serializers
 from allauth.account.utils import setup_user_email
+from carrito.models import Carrito
 
 class ArmaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,13 +48,18 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 #Modificamos el registro de usuarios a uno personalizado porque nuestro modelo no tiene el campo username
 class CustomRegisterSerializer(RegisterSerializer):
-    username = None 
+    username = None
+    password = serializers.CharField(write_only=True) 
+    password1 = None
+    password2 = None
 
+    def validate(self, data):
+        return data
+    
     def get_cleaned_data(self):
         return {
             'email': self.validated_data.get('email', ''),
-            'password1': self.validated_data.get('password1', ''),
-            'password2': self.validated_data.get('password2', ''),
+            'password': self.validated_data.get('password', ''),
         }
     
     def save(self, request):
@@ -61,9 +67,10 @@ class CustomRegisterSerializer(RegisterSerializer):
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
         user.email = self.cleaned_data.get('email')
-        user.set_password(self.cleaned_data.get('password1'))
+        user.set_password(self.cleaned_data.get('password'))
         user.save()
         setup_user_email(request, user, [])
+        return user
 
 class CustomLoginSerializer(LoginSerializer):
     username = None 
@@ -79,10 +86,12 @@ class CustomLoginSerializer(LoginSerializer):
         else:
             raise serializers.ValidationError('Las credenciales no son correctas')
 
-        
-
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = '__all__'
+
+class CarritoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Carrito

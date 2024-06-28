@@ -4,8 +4,10 @@ from rest_framework.decorators import action, api_view
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .serializer import ArmaSerializer,CustomTokenObtainPairSerializer, CustomUserSerializer,CustomLoginSerializer
+from .serializer import ArmaSerializer,CustomTokenObtainPairSerializer, CustomUserSerializer,CustomLoginSerializer,CustomRegisterSerializer
 from .models import Arma
 from Usuarios.models import CustomUser
 
@@ -28,3 +30,28 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 class CustomLoginView(APIView):
     serializer_class = CustomLoginSerializer
 
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True): #Verificamos si la informacion que enviamos en nuestro request es valida instanciando la clase serializadora
+        
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': user.email,
+            }, status=status.HTTP_200_OK)
+        
+class CustomRegisterView(APIView):
+    serializer_class = CustomRegisterSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+        
+            user = serializer.save(request)
+            
+            return Response({
+                'user': user.email,
+            }, status=status.HTTP_200_OK)            
