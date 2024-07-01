@@ -5,51 +5,54 @@ from Usuarios.models import CustomUser
 
 class Carrito(models.Model):
 
-    usuario = models.ForeignKey(CustomUser, related_name="subcategories",on_delete=models.CASCADE, default=None)
-
-    def __init__(self,request):
-        self.request = request
-        self.session = request.session
-        if 'carrito' not in self.session:
-            self.session['carrito'] = {}
-        self.carrito = self.session['carrito']
-
+    usuario = models.OneToOneField(CustomUser, related_name="carrito",on_delete=models.CASCADE, default=None)
 
     def agregar(self,arma):
-        id = str(arma.id)
-        if id not in self.carrito.keys():
-            self.carrito[id]={
-                "id_arma":arma.id,
-                "nombre_completo_arma":arma.full_item_name,
-                "imagen_arma":(arma.imageurl), #.replace('%3A', ':').replace('%2F', '/').lstrip('/'), 
-                "acumulado": arma.precio,
-                "cantidad":1,
-                "float": arma.floatvalue,
-            }
+        id_arma = str(arma.id)
+        if id_arma not in self.contenido_carrito:
+            self.contenido_carrito[id_arma] = {
+                        "id_arma":arma.id,
+                        "nombre_completo_arma":arma.full_item_name,
+                        "imagen_arma":(arma.imageurl), #.replace('%3A', ':').replace('%2F', '/').lstrip('/'), 
+                        "precio": arma.precio,
+                        "cantidad":1,
+                        "float": arma.floatvalue,}
         else:
-            self.carrito[id]["cantidad"] +=1
-            self.carrito[id]["acumulado"] += arma.precio
+            self.contenido_carrito["cantidad"] += 1
+        
         self.guardar_carrito()
 
-    def guardar_carrito(self):
-        self.session["carrito"] = self.carrito
-        self.session.modified = True
-
     def eliminar(self,arma):
-        id = str(arma.id)
-        if id in self.carrito:
-            del self.carrito[id]
+        id_arma = str(arma.id)
+        if id_arma in self.contenido_carrito:
+            del self.contenido_carrito[id_arma]
             self.guardar_carrito()
 
     def restar_arma(self,arma):
-        id= str(arma.id)
-        if id in self.carrito.keys():
-            self.carrito[id]["cantidad"] -= 1
-            self.carrito[id]["acumulado"] -= arma.precio
-            if self.carrito[id]["cantidad"] <= 0: self.eliminar(arma)
-            self.guardar_carrito()
+        id_arma = str(arma.id)
+        if id_arma in self.contenido_carrito:
+            if self.carrito[id_arma]["cantidad"] > 0:
+                self.carrito[id_arma]["cantidad"] -= 1
+                self.carrito[id_arma]["precio"] -= arma.precio
+            else: 
+                self.eliminar(arma)
+        
+        self.guardar_carrito()
 
+    def guardar_carrito(self):
+        self.save()
+
+    def total_carrito(self):
+        total = 0
+        for id in self.contenido_carrito:
+            total += self.contenido_carrito[id]["precio"] * self.contenido_carrito[id]["cantidad"]
+        
+        return total
+        
     def limpiar(self):
-        self.session["carrito"] = {}
-        self.session.modified = True
+        self.contenido_carrito = {}
+        self.guardar_carrito()
+
+    def obtener_carrito(self):
+        return self.contenido_carrito
 
