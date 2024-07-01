@@ -95,3 +95,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
 class CarritoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Carrito
+        fields = ['usuario','contenido_carrito']
+        

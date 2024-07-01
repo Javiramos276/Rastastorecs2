@@ -31,4 +31,4 @@ class Arma(models.Model):
     precio = models.IntegerField(blank=True, null=True)  
     inspect_link = models.CharField(null=True,blank=True,max_length=2000) #Aca si utilizo un URLFIELD tengo problemas en el admin. Charfield me sirve y no genera errores
     owner_steamid = models.BigIntegerField(blank=False, default=76561199092801246)  #Cada arma siempre tiene que tener un propietario
-    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, null=True, blank=True)
+    carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, null=True, blank=True, related_name='armas')

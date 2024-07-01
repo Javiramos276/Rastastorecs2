@@ -6,8 +6,9 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
+from rest_framework.generics import ListAPIView,UpdateAPIView
 from django.shortcuts import get_object_or_404
-from .serializer import ArmaSerializer,CustomTokenObtainPairSerializer, CustomUserSerializer,CustomLoginSerializer,CustomRegisterSerializer
+from .serializer import ArmaSerializer,CustomTokenObtainPairSerializer, CustomUserSerializer,CustomLoginSerializer,CustomRegisterSerializer,CarritoSerializer
 from .models import Arma
 from Usuarios.models import CustomUser
 
@@ -55,3 +56,12 @@ class CustomRegisterView(APIView):
             return Response({
                 'user': user.email,
             }, status=status.HTTP_200_OK)            
+
+
+class CarritoView(UpdateAPIView):
+    serializer_class = ArmaSerializer
+
+    def get_queryset(self,request):
+        pass
+
+        
