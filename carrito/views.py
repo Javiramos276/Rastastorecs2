@@ -16,7 +16,9 @@ def view_compras(request):
     return render(request,'compras_usuario.html',context)
 
 def agregar_producto(request,arma_id):
+    print("me ejecuto")
     if request.method == "POST":
+        print("me ejecuto2")
         carrito,created = Carrito.objects.get_or_create(usuario=request.user) #El metodo get_or_create retorna una tupla, el carrito y "creado" que es un booleano
         arma = Arma.objects.get(id=arma_id)
         carrito.agregar(arma)
