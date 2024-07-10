@@ -18,20 +18,20 @@
                 <div class="col-lg-3 text-white"><strong>Propiedades</strong></div>
                 <div class="col-lg-3 text-white"><strong>Modificar</strong></div>
             </div>
-            {% for id_arma, arma in armas.items %}
+            {% for arma in armas %}
             <div class="row mt-3">
                 <div class="col-lg-3">
-                    <img src="{{ arma.imagen_arma }}" class="img-fluid" alt="{{ arma.nombre_completo_arma }}">
+                    <img src="{{ arma.imageurl }}" class="img-fluid" alt="{{ arma.nombre_completo_arma }}">
                 </div>
                 <div class="col-lg-3">
-                    <p class="text-white">{{ arma.nombre_completo_arma }}</p>
+                    <p class="text-white">{{ arma.full_item_name }}</p>
                     <p class="text-white">Float: {{ arma.float }}</p>
                     <p class="text-white">Cantidad: 1 </p> 
                     <p class="text-white">Precio: <b>${{ arma.precio }}</b></p>
                     <!-- {{ value.cantidad }} La cantidad siempre va a ser uno aca -->
                 </div>
                 <div class="col-lg-3">
-                    <a href="{% url 'quitar' id_arma %}" class="btn btn-danger">Eliminar</a>
+                    <a href="{% url 'quitar' arma.id %}" class="btn btn-danger">Eliminar</a>
                 </div>
             </div>
             {% endfor %}

@@ -1,5 +1,5 @@
 from django.db import models
-from carrito.models import Carrito
+from carrito.models import Carrito,Compra
 
 # Create your models here.
 
@@ -32,3 +32,9 @@ class Arma(models.Model):
     inspect_link = models.CharField(null=True,blank=True,max_length=2000) #Aca si utilizo un URLFIELD tengo problemas en el admin. Charfield me sirve y no genera errores
     owner_steamid = models.BigIntegerField(blank=False, default=76561199092801246)  #Cada arma siempre tiene que tener un propietario
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, null=True, blank=True, related_name='armas')
+    compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, related_name='armas_compradas', blank=True, null=True)
+    habilitada = models.BooleanField(default=True) #Este campo sirve para saber si esta arma esta o no habilitada luego de una compra.
+
+    def __str__(self):
+        return f"{self.id} - {self.full_item_name}"
+    

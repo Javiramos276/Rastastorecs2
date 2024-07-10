@@ -2,10 +2,11 @@ from django.urls import path, include
 from rest_framework import routers
 from api import views
 from rest_framework_simplejwt.views import TokenObtainPairView,TokenRefreshView
-from .views import CustomTokenObtainPairView, CustomLoginView,CustomRegisterView
+from .views import CustomTokenObtainPairView, CustomLoginView,CustomRegisterView,CarritoViewSet
 
 router = routers.DefaultRouter()
 router.register(r'armas',views.ArmaViewSet)
+router.register(r'carrito',views.CarritoViewSet)
 
 urlpatterns = [
     path('',include(router.urls)),

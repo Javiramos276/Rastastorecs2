@@ -117,7 +117,7 @@ class ItemHandler(models.Model):
                     
                     #Aca tengo que hacer un retry si la informacion no entro bien. Despues veo como hacerlo. De momento funciona. Usar bucle while!!!!
         
-
+    
 
 
 
