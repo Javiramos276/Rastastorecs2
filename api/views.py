@@ -28,9 +28,8 @@ class ArmaViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
-    def pistolas(self,request):
-        weapon_type = ['Desert Eagle','P250','USP-S','Glock-18','Tec-9']
-        armas= Arma.objects.all().filter(weapon_type__in=weapon_type).exclude(precio=0)
+    def filtrar(self,request,localized_tag_name):
+        armas= Arma.objects.all().filter(localized_tag_name=localized_tag_name).exclude(precio=0)
         serializer = self.get_serializer(armas, many=True)
         return Response(serializer.data)
     
