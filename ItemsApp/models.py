@@ -7,6 +7,8 @@ import time
 import psycopg2  # Importa la librería psycopg2 para conectarte a PostgreSQL
 from api.models import Arma
 import os
+import re
+from bs4 import BeautifulSoup
 
 # Create your models here.
 class ItemHandler(models.Model):
@@ -41,15 +43,18 @@ class ItemHandler(models.Model):
         
 
 
-    def steam_links(self,owner_name,owner_steamid):
+    def steam_links_and_desc(self,owner_name,owner_steamid):
     
         data = self.filtraritem(owner_name) #Data es un diccionario de objetos que contiene la informacion de todos los objetos
-        
-        links = []
+
+        informacion_items = []
         for item in data['assets']:
             classid = item['classid'] #Buscamos en el diccionario de assets el classid
+            instanceid = item['instanceid']
             for description in data['descriptions']:
-                if description['classid'] == classid: #Relacionamos los objetos con el classid
+                if description['classid'] == classid and description['instanceid'] == instanceid: #Relacionamos los objetos con el classid
+                    # descriptions.append(description)
+                    informacion_item = {}
                     if 'actions' in description and description['actions']: #Vemos si tienen opcion para inspeccionar en el juego
                         assetid = item['assetid']
                         link = description['actions'][0]['link']
@@ -57,9 +62,56 @@ class ItemHandler(models.Model):
                         modified_link = link.replace(r'%assetid%', assetid)
                         # Reemplazar owner_steamid en el enlace
                         modified_link = modified_link.replace(r'%owner_steamid%', str(owner_steamid))
-                        links.append(modified_link)
-        return links
-    
+                        informacion_item['modified_link'] = modified_link
+                        # links.append(modified_link)
+
+                    #Obtener el nombre de la etiqueta localizada usando la función obtener_tag_name
+                    tags = description.get('tags', [])
+                    localized_tag_name = self.obtener_tag_name(tags)
+                    if localized_tag_name:
+                        informacion_item['localized_tag_name'] = localized_tag_name
+                    
+                    #Aquí se agrega la información de los stickers
+                    stickers_info = self.obtener_stickers_info(description['descriptions'])
+                    if stickers_info:
+                        informacion_item['stickers_info'] = stickers_info
+
+                    # Añadir el diccionario de información del objeto a la lista
+                    informacion_items.append(informacion_item)
+
+        return informacion_items
+                
+    def obtener_tag_name(self, tags):
+        for tag in tags:
+            if tag['category'] == 'Type':
+                return tag['localized_tag_name']
+        return None  # Devuelve None si no encuentra ningún tag
+
+
+    def obtener_stickers_info(self,descriptions):   
+        stickers_info = []
+
+        for item in descriptions:
+            if 'sticker_info' in item['value']:
+                sticker_info = item['value']
+
+                soup = BeautifulSoup(sticker_info, 'html.parser')
+                images = [img['src'] for img in soup.find_all('img')]
+                text = soup.get_text(strip=True)
+                sticker_names_matches = re.findall(r'Sticker: (.+)', text)
+
+                if sticker_names_matches:
+                    sticker_names = sticker_names_matches[0].split(',')
+                else:
+                    sticker_names = []
+
+                for img, name in zip(images, sticker_names):
+                    stickers_info.append({'sticker_img': img, 'sticker_name': name.strip()})
+
+                # Si encontramos stickers, devolvemos la info del primero encontrado
+                return stickers_info
+
+        return None  # Devuelve None si no se encuentra información de stickers
 
     def links_processed(self,owner_name,owner_steamid):
         fields = [
@@ -90,32 +142,40 @@ class ItemHandler(models.Model):
             'inspect_link',
             'owner_steamid',
             'precio',
+            'localized_tag_name',
+            'stickers_custom',
         ]
         
-        links = self.steam_links(owner_name,owner_steamid) 
-        links = links[:150] #Solo retorno los primeros 10 para probar
-        armas_existente  = Arma.objects.all() #Me traigo todas las armas de la base de datos
-        for link in links:
-            arma_existente = armas_existente.filter(inspect_link=link).exists()  #Verifico con un filtro si ya existe una arma con dicho link
-            if arma_existente:
-                print(f"El enlace {link} ya ha sido procesado. Saltando...")
-            else:
-                json_data = requests.get(f"http://localhost/?url="+link)
-                time.sleep(1)
-                if json_data.status_code == 200:
-                    content = json_data.json()
-                    item_info = content.get('iteminfo')
-                    my_data = {field: item_info.get(field, None) for field in fields}
-                    my_data['inspect_link'] = link #Agrego manualmente el link de inspeccion porque no me lo da el request que estoy haciendo.
-                    my_data['owner_steamid'] = owner_steamid
-                    my_data['precio'] = 0
-                    arma = Arma(**my_data)  # Crear una nueva instancia de Arma con los datos
-                    arma.save()
-                    print('item cargado exitosamente.')
+        informacion_items = self.steam_links_and_desc(owner_name,owner_steamid) #Recuerdo que items info es una lista con un dic adentro [{}]
+
+        for item in informacion_items:
+            print(item)
+            if 'modified_link' in item:
+                link = item['modified_link']
+                if not Arma.objects.filter(inspect_link=link).exists():
+                    json_data = requests.get(f"http://localhost/?url=" + link)
+                    time.sleep(1)
+
+                    if json_data.status_code == 200:
+                        content = json_data.json()
+                        item_info = content.get('iteminfo')
+                        my_data = {field: item_info.get(field, None) for field in fields}
+                        my_data['inspect_link'] = link
+                        my_data['owner_steamid'] = owner_steamid
+                        my_data['precio'] = 0
+                        if 'localized_tag_name' in item:
+                            my_data['localized_tag_name'] = item['localized_tag_name']
+                        if 'stickers_info' in item:
+                            my_data['stickers_custom'] = item['stickers_info']
+
+                        arma = Arma(**my_data)
+                        arma.save()
+                        print(f'Item cargado exitosamente: {arma}')
+                    else:
+                        print(f"La solicitud a {item['inspect_link']} no fue exitosa. Código de estado:", json_data.status_code)
+                        #Aca tengo que hacer un retry si la informacion no entro bien. Despues veo como hacerlo. De momento funciona. Usar bucle while!!!!
                 else:
-                    print(f"La solicitud a {link} no fue exitosa. Código de estado:", json_data.status_code)
-                    
-                    #Aca tengo que hacer un retry si la informacion no entro bien. Despues veo como hacerlo. De momento funciona. Usar bucle while!!!!
+                    print(f"Esta arma ya existe en la base de datos")
         
     
 

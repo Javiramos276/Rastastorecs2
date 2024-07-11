@@ -81,11 +81,11 @@ def view_cargar_objetos(request):
     
     owner_steamid = {
             "Rasta":76561199092801246,
-            "Fell":76561198085469210 ,
+            # "Fell":76561198085469210 ,
         }
     
     # Obtenemos el txt del inventario de cada uno
-    item_handler.obtenertxt()
+    # item_handler.obtenertxt()
 
     # Filtramos la informacion
     for owner_name,owner_id in owner_steamid.items(): #Aca no se si es necesario pasar owner_name, pero como se trata de un dict lo dejo

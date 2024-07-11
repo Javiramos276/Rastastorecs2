@@ -34,6 +34,9 @@ class Arma(models.Model):
     carrito = models.ForeignKey(Carrito, on_delete=models.CASCADE, null=True, blank=True, related_name='armas')
     compra = models.ForeignKey(Compra,on_delete=models.SET_NULL, related_name='armas_compradas', blank=True, null=True)
     habilitada = models.BooleanField(default=True) #Este campo sirve para saber si esta arma esta o no habilitada luego de una compra.
+    localized_tag_name = models.CharField(max_length=255, blank=True, null=True)
+    stickers_custom = models.JSONField(blank=True,null=True) 
+
 
     def __str__(self):
         return f"{self.id} - {self.full_item_name}"
